@@ -1,0 +1,52 @@
+@import "vendor/bootstrap.min.css";
+@import "vendor/fontawesome.min.css";
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Sarabun:ital,wght@0,200;0,300;0,400;0,600;0,700;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans+Condensed:ital,wght@0,300;0,700;1,300&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Open Sans Condensed', sans-serif;
+}
+
+body {
+    background-color: #d9d9d9;
+}
+
+.font-title {
+    font-family: 'Cinzel', serif;
+}
+
+#header {
+    height: 350px;
+    background: url('images/header_bg.jpg') repeat;
+    background-size: 150px 150px;
+}
+
+#header-logo, #header-logo > h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 50px;
+    color: #f9f9f9;
+    letter-spacing: 7px;
+    text-align: center;
+    padding-top: 55px;
+}
+
+#main-container {
+    background: #f9f9f9;
+    position: relative;
+    text-align: center;
+    min-height: 400px;
+    margin: -100px auto 0;
+    padding: 15px;
+}
+
+#footer {
+    text-align: center;
+    font-size: 14px;
+    margin-top: 15px;
+}
+
+form {
+    margin: 25px;
+}

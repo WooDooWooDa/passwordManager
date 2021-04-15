@@ -6,7 +6,7 @@ class AccountBroker extends Broker
 {
     public function findById($id): ?\stdClass
     {
-        $sql = "SELECT * from authentication where user_id = ?";
+        $sql = "SELECT * from passwordmanagerdb.authentication where user_id = ?";
         return $this->selectSingle($sql, [$id]);
     }
 

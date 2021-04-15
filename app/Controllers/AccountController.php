@@ -18,8 +18,8 @@ class AccountController extends SecurityController
     public function debug()
     {
         $broker = new AccountBroker();
-        $user = $broker->findByUsername("je");
-        var_dump($user);
+        $account = $broker->findById(sess('user_id'));
+        var_dump($account);
     }
 
     public function logout()

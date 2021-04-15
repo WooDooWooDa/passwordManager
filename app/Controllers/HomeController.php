@@ -1,5 +1,7 @@
 <?php namespace Controllers;
 
+use Models\Brokers\AccountBroker;
+
 class HomeController extends SecurityController
 {
 
@@ -11,8 +13,11 @@ class HomeController extends SecurityController
 
     public function account()
     {
+        $broker = new AccountBroker();
+        $account = $broker->findById(sess('user_id'));
         return $this->render('account', [
-           'title' => "Compte - Password Manager"
+           'title' => "Compte - Password Manager",
+            'account' => $account
         ]);
     }
 

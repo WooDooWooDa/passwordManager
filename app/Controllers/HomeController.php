@@ -6,6 +6,14 @@ class HomeController extends SecurityController
     public function initializeRoutes()
     {
         $this->get("/home", "home");
+        $this->get("/home/account", "account");
+    }
+
+    public function account()
+    {
+        return $this->render('account', [
+           'title' => "Compte - Password Manager"
+        ]);
     }
 
     public function home()
@@ -14,7 +22,7 @@ class HomeController extends SecurityController
             return $this->redirect("/login");
         }
         return $this->render('homepage', [
-            'title'=> "Accueil - Password Manager"
+            'title' => "Accueil - Password Manager"
         ]);
     }
 }

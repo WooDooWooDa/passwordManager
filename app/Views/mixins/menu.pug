@@ -1,6 +1,7 @@
-#menu.text-right
-  div
-    a(href="/home") Accueil
-    a(href="/home/compte") Compte
-    a(href="/account/logout") Déconnexion
-  hr.mx-3
+mixin menu()
+  #menu.text-right
+    div.mt-1
+      a(href="/home") Accueil
+      a(href="/home/account") Compte
+      a(href="/account/logout") Déconnexion
+    hr.mx-2.mt-2

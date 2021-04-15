@@ -1,7 +1,6 @@
 include mixins/base
 include mixins/form
 include mixins/menu
-include mixins/account
 html
   head
     title=title
@@ -9,6 +8,8 @@ html
   body
     include mixins/header
     #main-container.container.p-2
+      block menu
       +flash
       block content
+    block script
     include mixins/footer

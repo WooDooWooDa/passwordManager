@@ -1,6 +1,7 @@
 <?php namespace Controllers;
 
 use Models\Brokers\AccountBroker;
+use Models\Validator;
 use Zephyrus\Application\Flash;
 use Zephyrus\Application\Rule;
 
@@ -12,6 +13,7 @@ class AccountController extends SecurityController
         $this->post("/account/register", "registerAccount");
         $this->post("/account/login", "loginAccount");
         $this->get("/account/logout", "logout");
+        $this->put("/account/update", "updateAccount");
         $this->get("/debug", "debug");
     }
 
@@ -50,15 +52,27 @@ class AccountController extends SecurityController
         return $this->redirect("/home");
     }
 
+    public function updateAccount()
+    {
+        $form = $this->buildForm();
+        $validator = new Validator();
+        $validator->validateAllForm($form);
+        if (!$form->verify()) {
+            $errors = $form->getErrorMessages();
+            Flash::error($errors);
+            return $this->redirect("/home/account");
+        }
+        $accountBroker = new AccountBroker();
+        $accountBroker->updateAccount($form->buildObject());
+        Flash::success("Compte mis à jour!");
+        return $this->redirect("/home/account");
+    }
+
     public function registerAccount()
     {
         $form = $this->buildForm();
-        $form->validate('firstname', Rule::notEmpty("Le prénom est requis"));
-        $form->validate('lastname', Rule::notEmpty("Le nom est requis"));
-        $form->validate('username', Rule::notEmpty("Le nom d'utilisateur est requis"));
-        //validate username doesnt not exist
-        $form->validate('password', Rule::notEmpty("Le mot de passe est requis"));               //afficher un ou lautre
-        $form->validate('password', Rule::passwordCompliant("Le mot de passe doit être valide"));
+        $validator = new Validator();
+        $validator->validateAllForm($form);
         if (!$form->verify()) {
             $errors = $form->getErrorMessages();
             Flash::error($errors);

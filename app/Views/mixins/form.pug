@@ -1,3 +1,10 @@
 mixin input(placeholder, name, type)
   .form-group
     input.form-control(type=type name=name value=val(name) placeholder=placeholder)
+
+mixin accountProperty(property, value, name)
+  .mb-3.form-row
+    .col-5
+      h2=property
+    .col-7.align-self-center
+      input.form-control(value=value name=name)

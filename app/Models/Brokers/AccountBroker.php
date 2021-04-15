@@ -17,6 +17,14 @@ class AccountBroker extends Broker
         $this->query($userSql ,[$user->username, $saltedPassword, $user->firstname, $user->lastname]);
     }
 
+    public function updateAccount(stdClass $user)
+    {
+        $saltedPassword = password_hash($user->password . PASSWORD_PEPPER, PASSWORD_DEFAULT);
+        $userId = sess('user_id');
+        $userSql = "UPDATE passwordmanagerdb.authentication SET username = ?, password = ?, firstname = ?, lastname = ?, email = ? where user_id = '$userId'";
+        $this->query($userSql ,[$user->username, $saltedPassword, $user->firstname, $user->lastname, $user->email]);
+    }
+
     public function findByUsername($username): ?\stdClass
     {
         $sql = "SELECT * from passwordmanagerdb.authentication where username = ?";

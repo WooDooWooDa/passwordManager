@@ -9,6 +9,15 @@ class HomeController extends SecurityController
     {
         $this->get("/home", "home");
         $this->get("/home/account", "account");
+        $this->get("/home/service", "service");
+    }
+
+    public function service()
+    {
+        //render
+        return $this->render('service', [
+            'title' => "Services - Password Manager",
+        ]);
     }
 
     public function account()

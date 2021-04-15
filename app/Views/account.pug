@@ -1,8 +1,19 @@
 extends layout
+block menu
+  +menu
 block content
-  +menu()
   h1 Mon compte
   h5 Modifier les informations de votre compte
-  .text-left.w-50.mx-auto
-    +accountProperty("Prénom :", account.firstname, "firstname")
-    +accountProperty("Nom : ", account.lastname, "lastname")
+  .text-left.w-50.mx-auto.mt-4
+    +form("put", "/account/update")
+      +accountProperty("Prénom :", account.firstname, "firstname")
+      +accountProperty("Nom :", account.lastname, "lastname")
+      +accountProperty("Email :", account.email, "email")
+      hr
+      +accountProperty("Nom d'utilisateur :", account.username, "username")
+      +accountProperty("Mot de passe :", "********", "password")
+      .text-right
+        button.btn.btn-outline-primary()#apply Appliquer les changements
+block script
+  script(src="/javascripts/vendor/jquery-3.5.1.min.js")
+  script(src="/javascripts/accountChanges.js")

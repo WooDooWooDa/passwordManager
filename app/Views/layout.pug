@@ -1,0 +1,12 @@
+include mixins/base
+include mixins/form
+html
+  head
+    title=title
+    link(rel="stylesheet" href="/stylesheets/style.css")
+  body
+    include mixins/header
+    #main-container.container.p-2
+      +flash
+      block content
+    include mixins/footer

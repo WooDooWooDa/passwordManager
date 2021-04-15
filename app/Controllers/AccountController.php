@@ -1,8 +1,8 @@
 <?php namespace Controllers;
 
 use Models\Brokers\AccountBroker;
-use Models\Verification;
 use Zephyrus\Application\Flash;
+use Zephyrus\Application\Rule;
 
 class AccountController extends SecurityController
 {
@@ -11,48 +11,62 @@ class AccountController extends SecurityController
     {
         $this->post("/account/register", "registerAccount");
         $this->post("/account/login", "loginAccount");
+        $this->get("/account/logout", "logout");
         $this->get("/debug", "debug");
     }
 
     public function debug()
     {
         $broker = new AccountBroker();
-        $user = $broker->findByUsername("admin");
+        $user = $broker->findByUsername("je");
         var_dump($user);
+    }
+
+    public function logout()
+    {
+        unset($_SESSION["is_logged"]);
+        unset($_SESSION["user_id"]);
+        return $this->redirect("/login");
     }
 
     public function loginAccount()
     {
         $broker = new AccountBroker();
-        $user = $broker->findByUsername($_POST["username"]); //user est toujours null!
+        $form = $this->buildForm()->buildObject();
+        $user = $broker->findByUsername($form->username);
         if (is_null($user)) {
             sleep(2);
             Flash::error("information de connexion invalide");
             return $this->redirect("/login");
         }
-        $hashPassword = $user["password"];
-        if (!password_verify($_POST["password"] . PASSWORD_PEPPER, $hashPassword)) {
-            $_SESSION["error"] = "Informations fournises incorrects";
+        $hashPassword = $user->password;
+        if (!password_verify($form->password . PASSWORD_PEPPER, $hashPassword)) {
             sleep(2);
             Flash::error("information de connexion invalide");
             return $this->redirect("/login");
         }
         $_SESSION["is_logged"] = true;
-        $_SESSION["user_id"] = $user["user_id"];
+        $_SESSION["user_id"] = $user->user_id;
         return $this->redirect("/home");
     }
 
     public function registerAccount()
     {
-        //SANITIZE!!!!!!!!
-        $_SESSION["lastname"] = $_POST["lastname"];
-        $_SESSION["firstname"] = $_POST["firstname"];
-        $verification = new Verification();
-        if (!$verification->verify($_SESSION["firstname"], $_SESSION["lastname"], $_POST["username"], $_POST["password"])) {
+        $form = $this->buildForm();
+        $form->validate('firstname', Rule::notEmpty("Le prénom est requis"));
+        $form->validate('lastname', Rule::notEmpty("Le nom est requis"));
+        $form->validate('username', Rule::notEmpty("Le nom d'utilisateur est requis"));
+        //validate username doesnt not exist
+        $form->validate('password', Rule::notEmpty("Le mot de passe est requis"));               //afficher un ou lautre
+        $form->validate('password', Rule::passwordCompliant("Le mot de passe doit être valide"));
+        if (!$form->verify()) {
+            $errors = $form->getErrorMessages();
+            Flash::error($errors);
             return $this->redirect("/signUp");
         }
         $accountBroker = new AccountBroker();
-        $accountBroker->registerNew($_POST["username"], $_POST["password"]);
+        $accountBroker->registerNew($form->buildObject());
+        Flash::success("Compte créé!");
         return $this->redirect("/login");
     }
 }

@@ -1,6 +1,6 @@
 <?php namespace Controllers;
 
-class MainController extends SecurityController
+class HomeController extends SecurityController
 {
 
     public function initializeRoutes()

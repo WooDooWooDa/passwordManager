@@ -19,7 +19,9 @@ class LoginController extends SecurityController
     }
 
     public function login() {
-        $password = password_hash("admin" . PASSWORD_PEPPER, PASSWORD_DEFAULT);
+        if (isset($_SESSION["is_logged"])) {
+            return $this->redirect("/home");
+        }
         return $this->render('login', [
             'title' => "Connexion - Password Manager"
         ]);

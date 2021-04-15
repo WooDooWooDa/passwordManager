@@ -56,14 +56,14 @@ class AccountController extends SecurityController
     {
         $form = $this->buildForm();
         $validator = new Validator();
-        $validator->validateAllForm($form);
+        $validator->validateAllForm($form); //pas validate mdp si ***
         if (!$form->verify()) {
             $errors = $form->getErrorMessages();
             Flash::error($errors);
             return $this->redirect("/home/account");
         }
         $accountBroker = new AccountBroker();
-        $accountBroker->updateAccount($form->buildObject());
+        $accountBroker->updateAccount($form->buildObject());    //update seulement ceux changer ! car sinon mdp doit etre changer
         Flash::success("Compte mis à jour!");
         return $this->redirect("/home/account");
     }

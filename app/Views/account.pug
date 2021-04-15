@@ -1,5 +1,8 @@
 extends layout
 block content
   +menu()
-  h1 compte
-  h3=account.firstname + ' ' +  account.lastname
+  h1 Mon compte
+  h5 Modifier les informations de votre compte
+  .text-left.w-50.mx-auto
+    +accountProperty("Prénom :", account.firstname, "firstname")
+    +accountProperty("Nom : ", account.lastname, "lastname")

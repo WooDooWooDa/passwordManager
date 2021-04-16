@@ -1,6 +1,7 @@
 <?php namespace Controllers;
 
 use Models\Brokers\AccountBroker;
+use Models\Brokers\ServiceBroker;
 
 class HomeController extends SecurityController
 {
@@ -35,8 +36,11 @@ class HomeController extends SecurityController
         if (!isset($_SESSION["is_logged"])) {
             return $this->redirect("/login");
         }
+        $broker = new ServiceBroker();
+        $service = $broker->getAllService();
         return $this->render('homepage', [
-            'title' => "Accueil - Password Manager"
+            'title' => "Accueil - Password Manager",
+            'services' => $service
         ]);
     }
 }

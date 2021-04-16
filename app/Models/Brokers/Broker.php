@@ -11,6 +11,7 @@ use Zephyrus\Database\DatabaseBroker;
  * Class Broker
  * @package Models\Brokers
  */
+
 abstract class Broker extends DatabaseBroker
 {
     public function __construct(?Database $database = null)

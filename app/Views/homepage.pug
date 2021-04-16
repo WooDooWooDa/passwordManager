@@ -6,9 +6,6 @@ block content
   h3.mb-3 Les services que nous supportons
   .d-flex.justify-content-center
     ul.list-group.list-group-horizontal
-      li
-        img.service-icon(src="/assets/images/facebook_logo.png" alt="facebook")
-      li
-        img.service-icon(src="/assets/images/netflix_logo.png" alt="netflix")
-      li
-        img.service-icon(src="/assets/images/instagram_logo.png" alt="instagram")
+      each service in services
+        li
+          img.service-icon(src=service.img alt=service.name)

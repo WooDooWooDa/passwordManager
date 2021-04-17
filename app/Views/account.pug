@@ -12,8 +12,11 @@ block content
       hr
       +accountProperty("Nom d'utilisateur :", account.username, "username")
       +accountProperty("Mot de passe :", "********", "password")
-      .text-right
-        button.btn.btn-outline-primary()#apply Appliquer les changements
+      .text-right#apply
+        .form-check.mb-1
+          input(type='checkbox' name="comfirm").form-check-input.mr-3#comfirm
+          label(for='comfirm').form-check-label Comfirmer les changements
+        button.btn.btn-outline-primary() Appliquer les changements
 block script
   script(src="/javascripts/vendor/jquery-3.5.1.min.js")
   script(src="/javascripts/accountChanges.js")

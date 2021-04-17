@@ -21,8 +21,13 @@ class AccountBroker extends Broker
     {
         $saltedPassword = password_hash($user->password . PASSWORD_PEPPER, PASSWORD_DEFAULT);
         $userId = sess('user_id');
-        $userSql = "UPDATE passwordmanagerdb.authentication SET username = ?, password = ?, firstname = ?, lastname = ?, email = ? where user_id = '$userId'";
-        $this->query($userSql ,[$user->username, $saltedPassword, $user->firstname, $user->lastname, $user->email]);
+        if (str_contains($user->password, "*")) {
+            $userSql = "UPDATE passwordmanagerdb.authentication SET username = ?, firstname = ?, lastname = ?, email = ? where user_id = '$userId'";
+            $this->query($userSql ,[$user->username, $user->firstname, $user->lastname, $user->email]);
+        } else {
+            $userSql = "UPDATE passwordmanagerdb.authentication SET username = ?, password = ?, firstname = ?, lastname = ?, email = ? where user_id = '$userId'";
+            $this->query($userSql ,[$user->username, $saltedPassword, $user->firstname, $user->lastname, $user->email]);
+        }
     }
 
     public function findByUsername($username): ?\stdClass

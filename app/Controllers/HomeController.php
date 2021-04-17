@@ -15,6 +15,9 @@ class HomeController extends SecurityController
 
     public function service()
     {
+        if (!isset($_SESSION["is_logged"])) {
+            return $this->redirect("/login");
+        }
         //render
         return $this->render('service', [
             'title' => "Services - Password Manager",
@@ -23,6 +26,9 @@ class HomeController extends SecurityController
 
     public function account()
     {
+        if (!isset($_SESSION["is_logged"])) {
+            return $this->redirect("/login");
+        }
         $broker = new AccountBroker();
         $account = $broker->findById(sess('user_id'));
         return $this->render('account', [

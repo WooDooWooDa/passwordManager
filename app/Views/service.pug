@@ -3,3 +3,26 @@ block menu
   +menu
 block content
   h1 Services
+  h5 Gérer les informations de vos comptes ici
+  .mx-5.mt-4
+    .row.mx-5.border-bottom.border-dark.text-left.font-weight-bold
+      .col-4
+        h3 Site web
+      .col-4
+        h3 Nom d'utilisateur
+      .col-3
+        h3 Mot de passe
+    each service, index in services
+      .mx-5.row.p-3.text-left
+        .col-4.d-flex.flex-row
+          img.service-icon-10.mr-2.rounded-circle(src=service.img)
+          h4.m-0=service.name
+        .col-4
+          h4=service.username
+        .col-3
+          h4=show[index] ? service.password : "*******"
+        .col-1.d-flex.align-items-center
+          a.ml-4(href="#")
+            i.fas.fa-eye.text-dark
+          a.ml-4(href="/home/service/" + service.id)
+            i.fas.fa-ellipsis-v.text-dark

@@ -1,6 +1,7 @@
 <?php namespace Controllers;
 
 use Models\Brokers\AccountBroker;
+use Models\Brokers\ServiceBroker;
 use Models\Validator;
 use Zephyrus\Application\Flash;
 use Zephyrus\Application\Rule;
@@ -19,9 +20,9 @@ class AccountController extends SecurityController
 
     public function debug()
     {
-        $broker = new AccountBroker();
-        $account = $broker->findById(sess('user_id'));
-        var_dump($account);
+        $broker = new ServiceBroker();
+        $services = $broker->getAllServiceWithInfo(sess('user_id'));
+        var_dump($services);
     }
 
     public function logout()

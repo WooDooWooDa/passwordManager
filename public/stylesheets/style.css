@@ -9,8 +9,12 @@
     font-family: 'Open Sans Condensed', sans-serif;
 }
 
-.service-icon {
+.service-icon-40 {
     width: 40%;
+}
+
+.service-icon-10 {
+    width: 12%;
 }
 
 .alert-danger, .alert-success {

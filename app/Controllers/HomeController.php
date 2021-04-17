@@ -18,9 +18,13 @@ class HomeController extends SecurityController
         if (!isset($_SESSION["is_logged"])) {
             return $this->redirect("/login");
         }
-        //render
+        $show = [true, false, true, false];     //arranger ca pour le bouton show du mdp!
+        $broker = new ServiceBroker();
+        $services = $broker->getAllService();
         return $this->render('service', [
             'title' => "Services - Password Manager",
+            'services' => $services,
+            'show' => $show
         ]);
     }
 
@@ -43,10 +47,10 @@ class HomeController extends SecurityController
             return $this->redirect("/login");
         }
         $broker = new ServiceBroker();
-        $service = $broker->getAllService();
+        $services = $broker->getAllService();
         return $this->render('homepage', [
             'title' => "Accueil - Password Manager",
-            'services' => $service
+            'services' => $services
         ]);
     }
 }

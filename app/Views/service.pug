@@ -18,7 +18,7 @@ block content
           img.service-icon-10.mr-2.rounded-circle(src=service.img)
           h4.m-0=service.name
         .col-4
-          h4=service.username
+          h4=service.username != null ? service.username : "-"
         .col-3
           h4=show[index] ? service.password : "*******"
         .col-1.d-flex.align-items-center

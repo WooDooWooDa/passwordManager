@@ -11,7 +11,7 @@ class ServiceBroker extends Broker
     public function getAllServiceWithInfo($userId): array
     {
         echo $userId;
-        $sql = "SELECT * from passwordmanagerdb.service s left join passwordmanagerdb.service_information si on si.id_service = s.id where si.user_id = '$userId'";
+        $sql = "SELECT * from passwordmanagerdb.service s left join passwordmanagerdb.service_information si on si.id_service = s.id and si.user_id = '$userId'";
         return $this->select($sql);
     }
 }

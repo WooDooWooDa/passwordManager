@@ -11,21 +11,15 @@ class HomeController extends SecurityController
         $this->get("/home", "home");
         $this->get("/home/account", "account");
         $this->get("/home/service", "service");
-        $this->get("/home/service/{id}", "singleService");
-        $this->post("/home/service/show", "showMdp");
-    }
-
-    public function singleService($id) {
-        echo $id;
     }
 
     public function service()
     {
-        if (!isset($_SESSION['showMdp'])) {
-            $_SESSION['showMdp'] = [false, false, false, false];
-        }
         if (!isset($_SESSION["is_logged"])) {
             return $this->redirect("/login");
+        }
+        if (!isset($_SESSION['showMdp'])) {
+            $_SESSION['showMdp'] = [false, false, false, false];
         }
         $broker = new ServiceBroker();
         $services = $broker->getAllServiceWithInfo(sess('user_id'));
@@ -34,12 +28,6 @@ class HomeController extends SecurityController
             'services' => $services,
             'show' => sess('showMdp')
         ]);
-    }
-
-    public function showMdp() {
-        $array = $_SESSION['showMdp'];
-        $array[$_POST['show']] = true;
-        return $this->redirect("/home/service");
     }
 
     public function account()

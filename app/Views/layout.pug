@@ -3,7 +3,7 @@ include mixins/form
 include mixins/menu
 html
   head
-    title=title
+    title=(isset(title) ? title : "Password Manager")
     link(rel="stylesheet" href="/stylesheets/style.css")
   body
     include mixins/header

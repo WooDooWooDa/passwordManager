@@ -1,10 +1,9 @@
 extends layout
-// YA UN FCKING 3 EN HAUT DE LA PAGE!! Y VIENT DE OUUU??
 block menu
   +menu
 block content
   h1 Services
-  h5 Gérer les informations de vos comptes ici
+  h5 Gérer les informations de vos comptes
   .mx-5.mt-4
     .row.mx-5.border-bottom.border-dark.text-left.font-weight-bold
       .col-4
@@ -23,7 +22,8 @@ block content
         .col-3
           h4=show[index] ? service.password : "*******"
         .col-1.d-flex.align-items-center
-          a.ml-4(href="#")
-            i.fas.fa-eye.text-dark
+          form(action="/service/show" method="post").m-0
+            button.ml-4(name="show" value=index type="submit").border.border-0
+              i.fas.fa-eye.text-dark
           a.ml-4(href="/home/service/" + service.id)
             i.fas.fa-ellipsis-v.text-dark

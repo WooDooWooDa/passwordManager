@@ -18,7 +18,7 @@ class HomeController extends SecurityController
         if (!isset($_SESSION["is_logged"])) {
             return $this->redirect("/login");
         }
-        $show = [true, true, true, true];     //arranger ca pour le bouton show du mdp!
+        $show = [false, false, true, true];     //arranger ca pour le bouton show du mdp!
         $broker = new ServiceBroker();
         $services = $broker->getAllServiceWithInfo(sess('user_id'));
         return $this->render('service', [

@@ -1,7 +1,7 @@
-$('#apply').hide()
+$('#apply').prop("disabled", true)
 
 $(function(){
     $('form :input').change(function(e){
-        $('#apply').show()
+        $('#apply').prop("disabled", false)
     });
 });

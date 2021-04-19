@@ -39,13 +39,13 @@ class AccountController extends SecurityController
         $user = $broker->findByUsername($form->username);
         if (is_null($user)) {
             sleep(2);
-            Flash::error("information de connexion invalide");
+            Flash::error("Information de connexion invalide");
             return $this->redirect("/login");
         }
         $hashPassword = $user->password;
         if (!password_verify($form->password . PASSWORD_PEPPER, $hashPassword)) {
             sleep(2);
-            Flash::error("information de connexion invalide");
+            Flash::error("Information de connexion invalide");
             return $this->redirect("/login");
         }
         $_SESSION["is_logged"] = true;
@@ -59,7 +59,7 @@ class AccountController extends SecurityController
         $validator = new Validator();
         $validator->validateAllForm($form);
         if (!$form->getValue('comfirm')) {
-            Flash::error('veuillez comfirmer les changements avant de les appliquer');
+            Flash::error('Veuillez comfirmer les changements avant de les appliquer');
             return $this->redirect("/home/account");
         }
         if (!$form->verify()) {

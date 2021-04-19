@@ -29,6 +29,7 @@ class AccountController extends SecurityController
     {
         unset($_SESSION["is_logged"]);
         unset($_SESSION["user_id"]);
+        session_destroy();
         return $this->redirect("/login");
     }
 

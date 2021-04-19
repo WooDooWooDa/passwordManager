@@ -48,6 +48,7 @@ create table if not exists service
     id serial not null,
     name varchar(255),
     img varchar(255),
+    url varchar(255),
     constraint service_pk
         primary key (id)
 );

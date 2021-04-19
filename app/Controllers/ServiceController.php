@@ -9,6 +9,7 @@ class ServiceController extends SecurityController
     {
         $this->get("/home/service/{id}", "singleService");
         $this->post("/service/show", "showMdp");
+        $this->put("/service/update", "update");
     }
 
     public function singleService($id) {
@@ -25,6 +26,11 @@ class ServiceController extends SecurityController
         $index = $form->getValue('show');
         $array[$index] = !$array[$index];
         $_SESSION['showMdp'] = $array;
-        return $this->redirect("/home/service");
+        return $this->redirect("/home/service#" . $index);
+    }
+
+    public function update()
+    {
+
     }
 }

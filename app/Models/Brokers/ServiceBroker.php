@@ -19,4 +19,15 @@ class ServiceBroker extends Broker
         $sql = "SELECT * from passwordmanagerdb.service s left join passwordmanagerdb.service_information si on si.id_service = s.id and si.user_id = '$userId'";
         return $this->select($sql);
     }
+
+    public function insert($serviceId, $userId, $form)
+    {
+        $sql = "INSERT INTO passwordmanagerdb.service_information(id_service, username, password, user_id) values(?, ?, ?, ?)";
+        $this->query($sql, [$serviceId, $form->username, $form->password, $userId]);
+    }
+
+    public function update()
+    {
+
+    }
 }

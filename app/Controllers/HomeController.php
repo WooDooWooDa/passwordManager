@@ -2,6 +2,8 @@
 
 use Models\Brokers\AccountBroker;
 use Models\Brokers\ServiceBroker;
+use Models\Brokers\TokenBroker;
+use Zephyrus\Utilities\Gravatar;
 
 class HomeController extends SecurityController
 {
@@ -37,9 +39,21 @@ class HomeController extends SecurityController
         }
         $broker = new AccountBroker();
         $account = $broker->findById(sess('user_id'));
+
+        $gravatar = new Gravatar($account->email);
+        $imageUrl= "/assets/images/profil_pic_default.png";
+        if ($gravatar->isAvailable()) {
+            $imageUrl = $gravatar->getUrl();
+        }
+
+        $tokenBroker = new TokenBroker();
+        $tokenList = $tokenBroker->getAllTokenByUserId(sess('user_id'));
+
         return $this->render('account', [
            'title' => "Compte - Password Manager",
-            'account' => $account
+            'account' => $account,
+            'imageUrl' => $imageUrl,
+            'tokenList' => $tokenList
         ]);
     }
 

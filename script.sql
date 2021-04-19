@@ -27,19 +27,20 @@ create table if not exists person
 
 alter table person owner to etudiant;
 
-drop table token;
+drop table if exists token;
 create table if not exists token
 (
-    user_id integer,
-    cookie_token varchar(64) not null,
-    constraint token_pk
-        primary key (cookie_token)
+    user_id      integer,
+    cookie_token varchar(64) not null
+        constraint token_pk
+            primary key,
+    date         date,
+    ip           varchar(50),
+    user_agent   varchar(255)
 );
 
-alter table token owner to etudiant;
-
-create unique index if not exists token_user_id_uindex
-    on token (user_id);
+alter table token
+    owner to etudiant;
 
 drop table service;
 create table if not exists service

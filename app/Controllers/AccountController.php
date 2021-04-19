@@ -2,6 +2,7 @@
 
 use Models\Brokers\AccountBroker;
 use Models\Brokers\ServiceBroker;
+use Models\Brokers\TokenBroker;
 use Models\Validator;
 use Zephyrus\Application\Flash;
 use Zephyrus\Application\Rule;
@@ -15,6 +16,7 @@ class AccountController extends SecurityController
         $this->post("/account/login", "loginAccount");
         $this->get("/account/logout", "logout");
         $this->put("/account/update", "updateAccount");
+        $this->post("/account/deleteToken", "deleteToken");
         $this->get("/debug", "debug");
     }
 
@@ -23,6 +25,15 @@ class AccountController extends SecurityController
         $broker = new ServiceBroker();
         $services = $broker->getAllServiceWithInfo(sess('user_id'));
         var_dump($services);
+    }
+
+    public function deleteToken()
+    {
+        $form = $this->buildForm();
+        $broker = new TokenBroker();
+        $broker->deleteToken($form->getValue('delete'));
+        Flash::success("Ordinateur retiré avec succès!");
+        return $this->redirect("/home/account");
     }
 
     public function logout()

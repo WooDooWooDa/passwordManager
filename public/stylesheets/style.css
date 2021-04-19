@@ -9,6 +9,12 @@
     font-family: 'Open Sans Condensed', sans-serif;
 }
 
+.profil-pic {
+    border-radius: 50%;
+    width: 15%;
+    border: 3px solid #757575;
+}
+
 .service-icon-40 {
     width: 40%;
 }

@@ -10,7 +10,19 @@ class ServiceBroker extends Broker
 
     public function getServiceById($id): \stdClass
     {
-        $sql = "SELECT * from passwordmanagerdb.service s left join passwordmanagerdb.service_information si on si.id_service = s.id where s.id = '$id'";
+        $sql = "SELECT s.id, s.name, s.img, s.url from passwordmanagerdb.service s left join passwordmanagerdb.service_information si on si.id_service = s.id where s.id = '$id'";
+        return $this->selectSingle($sql);
+    }
+
+    public function getServiceInfoFor($serviceId, $userId): ?\stdClass
+    {
+        $sql = "SELECT * from passwordmanagerdb.service_information si where si.id_service = '$serviceId' and user_id = '$userId'";
+        return $this->selectSingle($sql);
+    }
+
+    public function getServiceByIdAndUser($serviceId, $userId): ?\stdClass
+    {
+        $sql = "SELECT * from passwordmanagerdb.service_information si where si.id_service = '$serviceId' and si.user_id = '$userId'";
         return $this->selectSingle($sql);
     }
 
@@ -26,8 +38,9 @@ class ServiceBroker extends Broker
         $this->query($sql, [$serviceId, $form->username, $form->password, $userId]);
     }
 
-    public function update()
+    public function update($userId, $id, $service)
     {
-
+        $sql = "UPDATE passwordmanagerdb.service_information set username = ?, password = ? WHERE user_id = '$userId' and id_service = '$id'";
+        $this->query($sql, [$service->username, $service->password]);
     }
 }

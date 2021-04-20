@@ -1,7 +1,22 @@
 extends layout
 block menu
-    +menu
+  +menu
 block content
-    h1=service.name
-    h5 Gérer vos informations de votre pour ce service
-    +form("put", "/service/update")
+  .text-left.mx-auto.w-50
+    a(href="/home/service").text-dark
+      i.fas.fa-chevron-left
+      | &nbsp;Retour
+  h1=service.name
+  h5 Gérer vos informations de votre pour ce service
+  .w-50.mx-auto.text-left
+    +form("put", "/service/update/" + service.id)
+      +accountProperty("Nom d'utilisateur :", serviceInfo.username, "username")
+      +accountProperty("Mot de passe : ", serviceInfo.password, "password")
+      .text-right
+        .form-check.mb-1
+          input(type='checkbox' name="comfirm").form-check-input.mr-3#comfirm
+          label(for='comfirm').form-check-label Comfirmer les changements
+        button.btn.btn-outline-primary()#apply Appliquer les changements
+block script
+  script(src="/javascripts/vendor/jquery-3.5.1.min.js")
+  script(src="/javascripts/accountChanges.js")

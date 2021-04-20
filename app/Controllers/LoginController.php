@@ -13,7 +13,7 @@ class LoginController extends SecurityController
     public function index()
     {
         if (isset($_COOKIE[REMEMBERME])) {
-            //return $this->redirect("/account/login");s
+            return $this->redirect("/account/login");
         }
         return $this->redirect("/login");
     }
@@ -21,6 +21,9 @@ class LoginController extends SecurityController
     public function login() {
         if (isset($_SESSION["is_logged"])) {
             return $this->redirect("/home");
+        }
+        if (isset($_COOKIE[REMEMBERME])) {
+            return $this->redirect("/account/login");
         }
         return $this->render('login', [
             'title' => "Connexion - Password Manager"

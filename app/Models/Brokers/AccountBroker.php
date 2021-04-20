@@ -1,6 +1,7 @@
 <?php namespace Models\Brokers;
 
 use stdClass;
+use Zephyrus\Security\Cryptography;
 
 class AccountBroker extends Broker
 {
@@ -34,5 +35,25 @@ class AccountBroker extends Broker
     {
         $sql = "SELECT * from passwordmanagerdb.authentication where username = ?";
         return $this->selectSingle($sql, [$username]);
+    }
+
+    public function findByToken($cookie): ?\stdClass
+    {
+        $sql = "SELECT * from passwordmanagerdb.authentication a join token t on a.user_id = t.user_id where cookie_token = ?";
+        $this->selectSingle($sql, [$cookie]);
+    }
+
+    public function remember($userId): string
+    {
+        $cookie = Cryptography::randomString(64);
+        $sql = "INSERT INTO passwordmanagerdb.token(user_id, cookie_token, date, ip, user_agent) VALUES(?, ?, ?, ?, ?)";
+        $this->query($sql, [$userId, $cookie, date('m/d/Y h:i:s'), $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT']]);
+        return $cookie;
+    }
+
+    public function unremember($cookie)
+    {
+        $sql = "DELETE FROM passwordmanagerdb.token where cookie_token = '$cookie'";
+        $this->query($sql);
     }
 }

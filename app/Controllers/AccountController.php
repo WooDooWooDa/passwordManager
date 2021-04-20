@@ -38,6 +38,10 @@ class AccountController extends SecurityController
 
     public function logout()
     {
+        $broker = new AccountBroker();
+        $broker->unremember(sess('user_id'));
+        unset($_COOKIE[REMEMBERME]);
+        setcookie(REMEMBERME, null, -1, '/');
         unset($_SESSION["is_logged"]);
         unset($_SESSION["user_id"]);
         session_destroy();
@@ -48,7 +52,11 @@ class AccountController extends SecurityController
     {
         $broker = new AccountBroker();
         $form = $this->buildForm()->buildObject();
-        $user = $broker->findByUsername($form->username);
+        if (isset($_COOKIE[REMEMBERME])) {
+            $user = $broker->findByToken($_COOKIE[REMEMBERME]);
+        } else {
+            $user = $broker->findByUsername($form->username);
+        }
         if (is_null($user)) {
             sleep(2);
             Flash::error("Information de connexion invalide");
@@ -59,6 +67,11 @@ class AccountController extends SecurityController
             sleep(2);
             Flash::error("Information de connexion invalide");
             return $this->redirect("/login");
+        }
+        if ($form->rememberMe == 'on') {
+            $cookie = $broker->remember($user->user_id);
+            setcookie(REMEMBERME, $cookie, time()+(60*60*24*30), '/', true, true); //set cookie ne fonctionne pas !
+            Flash::info($cookie);
         }
         $_SESSION["is_logged"] = true;
         $_SESSION["user_id"] = $user->user_id;

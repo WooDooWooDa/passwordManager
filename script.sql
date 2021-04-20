@@ -42,6 +42,7 @@ create table if not exists token
 alter table token
     owner to etudiant;
 
+drop table service_information;
 drop table service;
 create table if not exists service
 (
@@ -55,7 +56,6 @@ create table if not exists service
 
 alter table service owner to etudiant;
 
-drop table service_information;
 create table if not exists service_information
 (
     id_service integer not null,

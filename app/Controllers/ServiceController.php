@@ -1,7 +1,6 @@
 <?php namespace Controllers;
 
 use Models\Brokers\ServiceBroker;
-use Models\Validator;
 use Zephyrus\Application\Flash;
 
 class ServiceController extends SecurityController
@@ -9,9 +8,27 @@ class ServiceController extends SecurityController
 
     public function initializeRoutes()
     {
+        $this->get("/home/service", "service");
         $this->get("/home/service/{id}", "singleService");
         $this->post("/service/show", "showMdp");
         $this->put("/service/update/{id}", "update");
+    }
+
+    public function service()
+    {
+        if (!isset($_SESSION["is_logged"])) {
+            return $this->redirect("/login");
+        }
+        if (!isset($_SESSION['showMdp'])) {
+            $_SESSION['showMdp'] = [false, false, false, false];
+        }
+        $broker = new ServiceBroker();
+        $services = $broker->getAllServiceWithInfo(sess('user_id'));
+        return $this->render('service', [
+            'title' => "Services - Password Manager",
+            'services' => $services,
+            'show' => sess('showMdp')
+        ]);
     }
 
     public function singleService($id) {

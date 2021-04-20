@@ -1,5 +1,7 @@
 <?php namespace Controllers;
 
+use Models\Brokers\ServiceBroker;
+
 class LoginController extends SecurityController
 {
 
@@ -8,6 +10,8 @@ class LoginController extends SecurityController
         $this->get("/", "index");
         $this->get("/login", "login");
         $this->get("/signUp", "signup");
+        $this->get("/home", "home");
+        $this->get("/debug", "debug");
     }
 
     public function index()
@@ -34,5 +38,25 @@ class LoginController extends SecurityController
         return $this->render('signup', [
             'title' => "Inscription - Password Manager"
         ]);
+    }
+
+    public function home()
+    {
+        if (!isset($_SESSION["is_logged"])) {
+            return $this->redirect("/login");
+        }
+        $broker = new ServiceBroker();
+        $services = $broker->getAllService();
+        return $this->render('homepage', [
+            'title' => "Accueil - Password Manager",
+            'services' => $services
+        ]);
+    }
+
+    public function debug()
+    {
+        $broker = new ServiceBroker();
+        $services = $broker->getAllServiceWithInfo(sess('user_id'));
+        var_dump($services);
     }
 }

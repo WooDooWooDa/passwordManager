@@ -5,26 +5,44 @@ use Models\Brokers\ServiceBroker;
 use Models\Brokers\TokenBroker;
 use Models\Validator;
 use Zephyrus\Application\Flash;
-use Zephyrus\Application\Rule;
+use Zephyrus\Utilities\Gravatar;
 
 class AccountController extends SecurityController
 {
 
     public function initializeRoutes()
     {
+        $this->get("/home/account", "account");
         $this->post("/account/register", "registerAccount");
         $this->post("/account/login", "loginAccount");
         $this->get("/account/logout", "logout");
         $this->put("/account/update", "updateAccount");
         $this->post("/account/deleteToken", "deleteToken");
-        $this->get("/debug", "debug");
     }
 
-    public function debug()
+    public function account()
     {
-        $broker = new ServiceBroker();
-        $services = $broker->getAllServiceWithInfo(sess('user_id'));
-        var_dump($services);
+        if (!isset($_SESSION["is_logged"])) {
+            return $this->redirect("/login");
+        }
+        $broker = new AccountBroker();
+        $account = $broker->findById(sess('user_id'));
+
+        $gravatar = new Gravatar($account->email);
+        $imageUrl= "/assets/images/profil_pic_default.png";
+        if ($gravatar->isAvailable()) {
+            $imageUrl = $gravatar->getUrl();
+        }
+
+        $tokenBroker = new TokenBroker();
+        $tokenList = $tokenBroker->getAllTokenByUserId(sess('user_id'));
+
+        return $this->render('account', [
+            'title' => "Compte - Password Manager",
+            'account' => $account,
+            'imageUrl' => $imageUrl,
+            'tokenList' => $tokenList
+        ]);
     }
 
     public function deleteToken()
@@ -53,7 +71,7 @@ class AccountController extends SecurityController
         $broker = new AccountBroker();
         $form = $this->buildForm()->buildObject();
         if (isset($_COOKIE[REMEMBERME])) {
-            $user = $broker->findByToken($_COOKIE[REMEMBERME]);                     //move this fn to TokenBroker
+            $user = $broker->findByToken($_COOKIE[REMEMBERME]);
         } else {
             $user = $broker->findByUsername($form->username);
         }

@@ -39,7 +39,7 @@ class AccountController extends SecurityController
     public function logout()
     {
         $broker = new AccountBroker();
-        $broker->unremember(sess('user_id'));
+        $broker->unremember(sess('user_id'));                                   //move this fn to TokenBroker
         unset($_COOKIE[REMEMBERME]);
         setcookie(REMEMBERME, null, -1, '/');
         unset($_SESSION["is_logged"]);
@@ -53,7 +53,7 @@ class AccountController extends SecurityController
         $broker = new AccountBroker();
         $form = $this->buildForm()->buildObject();
         if (isset($_COOKIE[REMEMBERME])) {
-            $user = $broker->findByToken($_COOKIE[REMEMBERME]);
+            $user = $broker->findByToken($_COOKIE[REMEMBERME]);                     //move this fn to TokenBroker
         } else {
             $user = $broker->findByUsername($form->username);
         }
@@ -69,8 +69,8 @@ class AccountController extends SecurityController
             return $this->redirect("/login");
         }
         if ($form->rememberMe == 'on') {
-            $cookie = $broker->remember($user->user_id);
-            setcookie(REMEMBERME, $cookie, time()+(60*60*24*30), '/', true, true); //set cookie ne fonctionne pas !
+            $cookie = $broker->remember($user->user_id);                            //move this fn to TokenBroker
+            setcookie(REMEMBERME, $cookie, time()+(60*60*24*30), '/', true, true);  //set cookie ne fonctionne pas !
             Flash::info($cookie);
         }
         $_SESSION["is_logged"] = true;

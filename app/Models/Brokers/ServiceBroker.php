@@ -8,7 +8,7 @@ class ServiceBroker extends Broker
         return $this->select($sql);
     }
 
-    public function getServiceById($id): \stdClass
+    public function getServiceById($id): ?\stdClass
     {
         $sql = "SELECT s.id, s.name, s.img, s.url from passwordmanagerdb.service s left join passwordmanagerdb.service_information si on si.id_service = s.id where s.id = '$id'";
         return $this->selectSingle($sql);
@@ -34,7 +34,7 @@ class ServiceBroker extends Broker
 
     public function insert($serviceId, $userId, $form)
     {
-        $sql = "INSERT INTO passwordmanagerdb.service_information(id_service, username, password, user_id) values(?, ?, ?, ?)";
+        $sql = "INSERT INTO passwordmanagerdb.service_information(id_service_information, id_service, username, password, user_id) values(default, ?, ?, ?, ?)";
         $this->query($sql, [$serviceId, $form->username, $form->password, $userId]);
     }
 

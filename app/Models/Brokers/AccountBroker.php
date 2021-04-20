@@ -14,8 +14,8 @@ class AccountBroker extends Broker
     public function registerNew(stdClass $user)
     {
         $saltedPassword = password_hash($user->password . PASSWORD_PEPPER, PASSWORD_DEFAULT);
-        $userSql = "INSERT INTO passwordmanagerdb.authentication(user_id, username, password, firstname, lastname) VALUES(default, ?, ?, ?, ?)";
-        $this->query($userSql ,[$user->username, $saltedPassword, $user->firstname, $user->lastname]);
+        $userSql = "INSERT INTO passwordmanagerdb.authentication(user_id, username, password, firstname, lastname, email) VALUES(default, ?, ?, ?, ?, ?)";
+        $this->query($userSql ,[$user->username, $saltedPassword, $user->firstname, $user->lastname, $user->email]);
     }
 
     public function updateAccount(stdClass $user)

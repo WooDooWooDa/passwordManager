@@ -39,8 +39,8 @@ class AccountBroker extends Broker
 
     public function findByToken($cookie): ?\stdClass
     {
-        $sql = "SELECT * from passwordmanagerdb.authentication a join token t on a.user_id = t.user_id where cookie_token = ?";
-        $this->selectSingle($sql, [$cookie]);
+        $sql = "SELECT * from passwordmanagerdb.authentication a join passwordmanagerdb.token t on a.user_id = t.user_id where cookie_token = ?";
+        return $this->selectSingle($sql, [$cookie]);
     }
 
     public function remember($userId): string

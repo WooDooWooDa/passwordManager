@@ -34,7 +34,7 @@ create table if not exists token
     cookie_token varchar(64) not null
         constraint token_pk
             primary key,
-    date         date,
+    date         varchar(255),
     ip           varchar(50),
     user_agent   varchar(255)
 );

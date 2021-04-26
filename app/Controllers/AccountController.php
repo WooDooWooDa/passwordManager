@@ -5,6 +5,7 @@ use Models\Brokers\ServiceBroker;
 use Models\Brokers\TokenBroker;
 use Models\Validator;
 use Zephyrus\Application\Flash;
+use Zephyrus\Network\Cookie;
 use Zephyrus\Utilities\Gravatar;
 
 class AccountController extends SecurityController
@@ -15,6 +16,7 @@ class AccountController extends SecurityController
         $this->get("/home/account", "account");
         $this->post("/account/register", "registerAccount");
         $this->post("/account/login", "loginAccount");
+        $this->get("/account/login", "loginAccountWithCookie");
         $this->get("/account/logout", "logout");
         $this->put("/account/update", "updateAccount");
         $this->post("/account/deleteToken", "deleteToken");
@@ -57,7 +59,8 @@ class AccountController extends SecurityController
     public function logout()
     {
         $broker = new AccountBroker();
-        $broker->unremember(sess('user_id'));                                   //move this fn to TokenBroker
+        $broker->unremember($_COOKIE[REMEMBERME]);                            //move this fn to TokenBroker
+
         unset($_COOKIE[REMEMBERME]);
         setcookie(REMEMBERME, null, -1, '/');
         unset($_SESSION["is_logged"]);
@@ -66,15 +69,20 @@ class AccountController extends SecurityController
         return $this->redirect("/login");
     }
 
+    public function loginAccountWithCookie()
+    {
+        $broker = new AccountBroker();
+        $user = $broker->findByToken($_COOKIE[REMEMBERME]);
+        $_SESSION["is_logged"] = true;
+        $_SESSION["user_id"] = $user->user_id;
+        return $this->redirect("/home");
+    }
+
     public function loginAccount()
     {
         $broker = new AccountBroker();
         $form = $this->buildForm()->buildObject();
-        if (isset($_COOKIE[REMEMBERME])) {
-            $user = $broker->findByToken($_COOKIE[REMEMBERME]);
-        } else {
-            $user = $broker->findByUsername($form->username);
-        }
+        $user = $broker->findByUsername($form->username);
         if (is_null($user)) {
             sleep(2);
             Flash::error("Information de connexion invalide");
@@ -87,9 +95,10 @@ class AccountController extends SecurityController
             return $this->redirect("/login");
         }
         if ($form->rememberMe == 'on') {
-            $cookie = $broker->remember($user->user_id);                            //move this fn to TokenBroker
-            setcookie(REMEMBERME, $cookie, time()+(60*60*24*30), '/', true, true);  //set cookie ne fonctionne pas !
-            Flash::info($cookie);
+            $cookie = $broker->remember($user->user_id);
+            $cookie = new Cookie(REMEMBERME, $cookie);
+            $cookie->setLifetime(Cookie::DURATION_MONTH);
+            $cookie->send();
         }
         $_SESSION["is_logged"] = true;
         $_SESSION["user_id"] = $user->user_id;

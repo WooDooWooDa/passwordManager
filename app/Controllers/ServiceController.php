@@ -2,6 +2,7 @@
 
 use Models\Brokers\ServiceBroker;
 use Zephyrus\Application\Flash;
+use Zephyrus\Application\Rule;
 
 class ServiceController extends SecurityController
 {
@@ -24,6 +25,12 @@ class ServiceController extends SecurityController
         }
         $broker = new ServiceBroker();
         $services = $broker->getAllServiceWithInfo(sess('user_id'));
+        $array = $_SESSION['showMdp'];
+        foreach ($services as $index=>$service) {
+            if ($array[$index]) {
+                $service->password = $broker->getPasswordDecrypted($service);
+            }
+        }
         return $this->render('service', [
             'title' => "Services - Password Manager",
             'services' => $services,
@@ -57,9 +64,14 @@ class ServiceController extends SecurityController
             Flash::error('Veuillez comfirmer les changements avant de les appliquer');
             return $this->redirect("/home/service/" . $id);
         }
+        $form->validate('password', Rule::notEmpty("Veuillez entrer une valeur de mot de passe pour modifié les informations"));
+        if (!$form->verify()) {
+            Flash::error($form->getErrorMessages());
+            return $this->redirect("/home/service/" . $id);
+        }
         $broker = new ServiceBroker();
         if (!is_null($broker->getServiceByIdAndUser($id, sess('user_id')))) {
-            $broker->update(sess('user_id'), $id, $form->buildObject());
+            $broker->update(sess('user_id'), $id, $form->buildObject()); //update chie à qqpart!!!
         } else {
             $broker->insert($id, sess('user_id'), $form->buildObject());
         }

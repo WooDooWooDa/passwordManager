@@ -11,7 +11,7 @@ block content
   .w-50.mx-auto.text-left
     +form("put", "/service/update/" + service.id)
       +accountProperty("Nom d'utilisateur :", serviceInfo.username, "username")
-      +accountProperty("Mot de passe : ", serviceInfo.password, "password")
+      +accountProperty("Mot de passe : ", "", "password")
       .text-right
         .form-check.mb-1
           input(type='checkbox' name="comfirm").form-check-input.mr-3#comfirm

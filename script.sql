@@ -50,6 +50,7 @@ create table if not exists service
     name varchar(255),
     img varchar(255),
     url varchar(255),
+    key varchar(64),
     constraint service_pk
         primary key (id)
 );

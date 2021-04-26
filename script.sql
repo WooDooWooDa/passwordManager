@@ -80,6 +80,3 @@ INSERT INTO service (id, name, img, url) VALUES (3, 'Instagram', '/assets/images
 INSERT INTO service (id, name, img, url) VALUES (1, 'Facebook', '/assets/images/facebook_logo.png', 'https://www.facebook.com/');
 INSERT INTO service (id, name, img, url) VALUES (4, 'Omnivox', '/assets/images/omnivox_logo.png', 'https://cegepst.omnivox.ca/Login');
 INSERT INTO service (id, name, img, url) VALUES (2, 'Netflix', '/assets/images/netflix_logo.png', 'https://www.netflix.com/');
-
-INSERT INTO service_information (id_service, username, password, user_id) VALUES (1, 'woodoo', '1234', 3);
-INSERT INTO service_information (id_service, username, password, user_id) VALUES (2, 'salome', 'qwe', 4);

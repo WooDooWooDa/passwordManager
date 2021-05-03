@@ -62,7 +62,9 @@ class AccountController extends SecurityController
         $broker->unremember($_COOKIE[REMEMBERME]);                            //move this fn to TokenBroker
 
         unset($_COOKIE[REMEMBERME]);
+        unset($_COOKIE[KEY]);
         setcookie(REMEMBERME, null, -1, '/');
+        setcookie(KEY, null, -1, '/');
         unset($_SESSION["is_logged"]);
         unset($_SESSION["user_id"]);
         session_destroy();
@@ -73,8 +75,12 @@ class AccountController extends SecurityController
     {
         $broker = new AccountBroker();
         $user = $broker->findByToken($_COOKIE[REMEMBERME]);
+        if ($user == null) {
+            $this->logout();
+        }
         $_SESSION["is_logged"] = true;
         $_SESSION["user_id"] = $user->user_id;
+        $_SESSION["enKey"] = $_COOKIE[KEY];
         return $this->redirect("/home");
     }
 
@@ -99,9 +105,13 @@ class AccountController extends SecurityController
             $cookie = new Cookie(REMEMBERME, $cookie);
             $cookie->setLifetime(Cookie::DURATION_MONTH);
             $cookie->send();
+            $keyCookie = new Cookie(KEY, $broker->getKey($form->password, $user->user_id));
+            $keyCookie->setLifetime(Cookie::DURATION_MONTH);
+            $keyCookie->send();
         }
         $_SESSION["is_logged"] = true;
         $_SESSION["user_id"] = $user->user_id;
+        $_SESSION["envKey"] = $broker->getKey($form->password, $user->user_id);
         return $this->redirect("/home");
     }
 

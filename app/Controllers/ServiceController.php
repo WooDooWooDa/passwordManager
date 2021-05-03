@@ -28,7 +28,10 @@ class ServiceController extends SecurityController
         $array = $_SESSION['showMdp'];
         foreach ($services as $index=>$service) {
             if ($array[$index]) {
-                $service->password = $broker->getPasswordDecrypted($service);
+                $password = $broker->getPasswordDecrypted($service);
+                if ($password != "") {
+                    $service->password = $password;
+                }
             }
         }
         return $this->render('service', [

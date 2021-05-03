@@ -13,9 +13,12 @@ class AccountBroker extends Broker
 
     public function registerNew(stdClass $user)
     {
+        $salt = Cryptography::randomString(64);
         $saltedPassword = password_hash($user->password . PASSWORD_PEPPER, PASSWORD_DEFAULT);
         $userSql = "INSERT INTO passwordmanagerdb.authentication(user_id, username, password, firstname, lastname, email) VALUES(default, ?, ?, ?, ?, ?)";
         $this->query($userSql ,[$user->username, $saltedPassword, $user->firstname, $user->lastname, $user->email]);
+        $sql = "INSERT INTO passwordmanagerdb.salt(user_id, salt) VALUES((SELECT last_value from passwordmanagerdb.authentication_user_id_seq), ?)";
+        $this->query($sql, [$salt]);
     }
 
     public function updateAccount(stdClass $user)
@@ -55,5 +58,12 @@ class AccountBroker extends Broker
     {
         $sql = "DELETE FROM passwordmanagerdb.token where cookie_token = '$cookie'";
         $this->query($sql);
+    }
+
+    public function getKey($password, $id): string
+    {
+        $sql = "SELECT salt FROM passwordmanagerdb.salt WHERE user_id = ?";
+        $result = $this->selectSingle($sql, [$id]);
+        return Cryptography::deriveEncryptionKey($password, $result->salt);
     }
 }

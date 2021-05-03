@@ -55,8 +55,7 @@ class LoginController extends SecurityController
 
     public function debug()
     {
-        $broker = new ServiceBroker();
-        $services = $broker->getAllServiceWithInfo(sess('user_id'));
-        var_dump($services);
+        $key = sess('envKey');
+        var_dump($key);
     }
 }

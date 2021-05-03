@@ -36,26 +36,44 @@ class ServiceBroker extends Broker
 
     public function insert($serviceId, $userId, $form)
     {
-        $key = Cryptography::deriveEncryptionKey($form->password, "saltTemporary");
+        $key = "";
+        if (isset($_SESSION["envKey"])) {
+            $key = sess('envKey');
+        } else if (isset($_COOKIE[KEY])) {
+            $key = $_COOKIE[KEY];
+        }
         $passwordFirstEncrypt = Cryptography::encrypt($form->password, $key);
-        $passwordEncrypted = Cryptography::encrypt($passwordFirstEncrypt, $key);
-        $sql = "INSERT INTO passwordmanagerdb.service_information(id_service_information, id_service, username, password, user_id, key) values(default, ?, ?, ?, ?, ?)";
-        $this->query($sql, [$serviceId, $form->username, $passwordEncrypted, $userId, $key]);
+        $passwordEncrypted = Cryptography::encrypt($passwordFirstEncrypt, SERVERKEY);
+        $sql = "INSERT INTO passwordmanagerdb.service_information(id_service_information, id_service, username, password, user_id) values(default, ?, ?, ?, ?)";
+        $this->query($sql, [$serviceId, $form->username, $passwordEncrypted, $userId]);
     }
 
     public function update($userId, $id, $service)
     {
-        $key = Cryptography::deriveEncryptionKey($service->password, "saltTemporary");
+        $key = "";
+        if (isset($_SESSION["envKey"])) {
+            $key = $_SESSION["envKey"];
+        } else if (isset($_COOKIE[KEY])) {
+            $key = $_COOKIE[KEY];
+        }
         $passwordFirstEncrypt = Cryptography::encrypt($service->password, $key);
-        $passwordEncrypted = Cryptography::encrypt($passwordFirstEncrypt, $key);
-        $sql = "UPDATE passwordmanagerdb.service_information set username = ?, password = ?, set key = ? WHERE user_id = '$userId' and id_service = '$id'";
-        $this->query($sql, [$service->username, $passwordEncrypted, $key]);
+        $passwordEncrypted = Cryptography::encrypt($passwordFirstEncrypt, SERVERKEY);
+        $sql = "UPDATE passwordmanagerdb.service_information set username = ?, password = ? WHERE user_id = '$userId' and id_service = '$id'";
+        $this->query($sql, [$service->username, $passwordEncrypted]);
     }
 
-    public function getPasswordDecrypted($service): String {
-        $sql = "SELECT key from passwordmanagerdb.service_information where id_service_information = '$service->id_service_information'";
-        $result = $this->selectSingle($sql);
-        $passwordDecryptedOnce  = Cryptography::decrypt($service->password, $result->key);
-        return Cryptography::decrypt($passwordDecryptedOnce, $result->key);
+    public function getPasswordDecrypted($service): String
+    {
+        if ($service->id_service_information == null) {
+            return "";
+        }
+        $key = "";
+        if (isset($_SESSION["envKey"])) {
+            $key = $_SESSION["envKey"];
+        } else if (isset($_COOKIE[KEY])) {
+            $key = $_COOKIE[KEY];
+        }
+        $passwordDecryptedOnce = Cryptography::decrypt($service->password, SERVERKEY);
+        return Cryptography::decrypt($passwordDecryptedOnce, $key);
     }
 }

@@ -60,6 +60,7 @@ class LoginController extends SecurityController
     public function debug()
     {
         $key = getenv('TWILIO_ACCOUNT_SID');
+        var_dump($_ENV);
         var_dump($key);
     }
 }

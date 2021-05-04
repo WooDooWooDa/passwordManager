@@ -1,8 +1,10 @@
 <?php namespace Controllers;
 
+use Models\Authentification2fa;
 use Models\Brokers\AccountBroker;
 use Models\Brokers\ServiceBroker;
 use Models\Brokers\TokenBroker;
+use Models\SmsAuthentification;
 use Models\Validator;
 use Zephyrus\Application\Flash;
 use Zephyrus\Network\Cookie;
@@ -89,6 +91,12 @@ class AccountController extends SecurityController
         $broker = new AccountBroker();
         $form = $this->buildForm()->buildObject();
         $user = $broker->findByUsername($form->username);
+
+        //2fa AUTH
+        $_SESSION["phone"] = $user->phone;
+        return $this->redirect("/authentification/smsAuth");
+        //2fa AUTH
+
         if (is_null($user)) {
             sleep(2);
             Flash::error("Information de connexion invalide");

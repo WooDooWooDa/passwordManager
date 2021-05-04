@@ -12,6 +12,8 @@ create table if not exists authentication
     firstname varchar(255),
     lastname varchar(255),
     email varchar(255),
+    phone varchar(20),
+    authType int,
     constraint authentication_pk
         primary key (user_id)
 );
@@ -88,7 +90,7 @@ alter table passwordmanagerdb.service_information owner to etudiant;
 INSERT INTO authentication (user_id, username, password, firstname, lastname, email) VALUES (1, 'admin', '$2y$10$pkb2ag75IRayNlgvJQkoeuGeYuc9sSgOnASjbGuxFEtUr/MFLiFlG', 'admin', 'system', 'admin-system@hotmail.com');
 INSERT INTO authentication (user_id, username, password, firstname, lastname, email) VALUES (2, 'bob', '$2y$10$A9fbOu7JoDUgHACVocChROnjHACP7nAi5BKESNsLn1LpsOrQ/wiTa', 'Jé', 'Bouy', 'jé-ou@gmail.com');
 INSERT INTO authentication (user_id, username, password, firstname, lastname, email) VALUES (3, 'jé', '$2y$10$f4xxk/pK7FZMk2XmV6zOLe/lqfECqb8qJ.ejv/XDI.TbgQnkOxYze', 'Jérémie', 'Bou', 'jeremie-bouchard@hotmail.fr');
-INSERT INTO authentication (user_id, username, password, firstname, lastname, email) VALUES (4, 'bri', '$2y$10$ErSWZfxsJct2damPB/d.y./01wZwD/JoYSqBD6mMByAe01lEYWxSa', 'Brigitte', 'Berger', 'bri@hotmail.com');
+INSERT INTO authentication (user_id, username, password, firstname, lastname, email, phone, authType) VALUES (4, 'bri', '$2y$10$ErSWZfxsJct2damPB/d.y./01wZwD/JoYSqBD6mMByAe01lEYWxSa', 'Brigitte', 'Berger', 'bri@hotmail.com', '4508801456', 1);
 
 INSERT INTO service (id, name, img, url) VALUES (3, 'Instagram', '/assets/images/instagram_logo.png', 'https://www.instagram.com/');
 INSERT INTO service (id, name, img, url) VALUES (1, 'Facebook', '/assets/images/facebook_logo.png', 'https://www.facebook.com/');

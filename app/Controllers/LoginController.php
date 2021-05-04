@@ -22,7 +22,8 @@ class LoginController extends SecurityController
         return $this->redirect("/login");
     }
 
-    public function login() {
+    public function login()
+    {
         if (isset($_SESSION["is_logged"])) {
             return $this->redirect("/home");
         }
@@ -34,7 +35,8 @@ class LoginController extends SecurityController
         ]);
     }
 
-    public function signup() {
+    public function signup()
+    {
         return $this->render('signup', [
             'title' => "Inscription - Password Manager"
         ]);
@@ -47,9 +49,11 @@ class LoginController extends SecurityController
         }
         $broker = new ServiceBroker();
         $services = $broker->getAllService();
+        echo $_SESSION["qrUrl"];
         return $this->render('homepage', [
             'title' => "Accueil - Password Manager",
-            'services' => $services
+            'services' => $services,
+            'qrImg' => $_SESSION["qrUrl"]
         ]);
     }
 

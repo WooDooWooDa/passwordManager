@@ -10,7 +10,10 @@
   ],
   "require": {
     "zephyrus/zephyrus": "1.1.*",
-    "ext-openssl": "*"
+    "ext-openssl": "*",
+    "sonata-project/google-authenticator": "^2.3",
+    "phpgangsta/googleauthenticator": "dev-master",
+    "twilio/sdk": "^6.22"
   },
   "require-dev": {
     "phpunit/phpunit": "5.5.*",

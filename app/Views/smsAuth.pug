@@ -4,7 +4,7 @@ block content
   br
   h3.mb-2 Entrez le code de comfirmation reçu par sms pour continuer
   .text-center.col-6.mx-auto
-    form(method="POST" action="/authentification/smsAuth/confirm")
+    form(method="POST" action="/authentication/smsAuth/confirm")
       .form-group
         label(for='code') Code à 6 chiffres
         input.form-control(id='code', name='code', type='text' placeholder='ex:123456')

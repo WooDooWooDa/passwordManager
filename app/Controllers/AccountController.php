@@ -4,7 +4,7 @@ use Models\Authentification2fa;
 use Models\Brokers\AccountBroker;
 use Models\Brokers\ServiceBroker;
 use Models\Brokers\TokenBroker;
-use Models\SmsAuthentification;
+use Models\SmsAuthentication;
 use Models\Validator;
 use Zephyrus\Application\Flash;
 use Zephyrus\Network\Cookie;
@@ -94,7 +94,7 @@ class AccountController extends SecurityController
 
         //2fa AUTH
         $_SESSION["phone"] = $user->phone;
-        return $this->redirect("/authentification/smsAuth");
+        return $this->redirect("/authentication/smsAuth");
         //2fa AUTH
 
         if (is_null($user)) {

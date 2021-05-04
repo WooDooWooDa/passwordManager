@@ -1,21 +1,21 @@
 <?php namespace Controllers;
 
-use Models\SmsAuthentification;
+use Models\SmsAuthentication;
 use Zephyrus\Application\Flash;
 
-class AuthentificationController extends SecurityController
+class AuthenticationController extends SecurityController
 {
     public function initializeRoutes()
     {
         $this->get("/googleAuth", "googleAuth");
-        $this->get("/authentification/smsAuth", "smsAuth");
-        $this->post("/authentification/smsAuth/confirm", "smsConfirm");
+        $this->get("/authentication/smsAuth", "smsAuth");
+        $this->post("/authentication/smsAuth/confirm", "smsConfirm");
     }
 
     public function smsAuth()
     {
         if (!isset($_SESSION["smsAuth"])) {
-            $smsAuth = new SmsAuthentification();
+            $smsAuth = new SmsAuthentication();
             $_SESSION["smsAuth"] = $smsAuth->createSms($_SESSION["phone"]);
             Flash::info("Code envoyer au ". $_SESSION["phone"]);
         }
@@ -29,7 +29,7 @@ class AuthentificationController extends SecurityController
     {
         $form = $this->buildForm()->buildObject();
         if ($form->code == $_SESSION["smsAuth"]) {
-
+            //return to login with
             return true;
         } else {
             Flash::error("Code de comfirmation invalide");
@@ -41,7 +41,7 @@ class AuthentificationController extends SecurityController
 
     public function googleAuth()
     {
-        return $this->render('googleAuthentification', [
+        return $this->render('googleAuthentication', [
             'qrUrl' => $_SESSION["qrUrl"],
             'title' => "Comfirmation par SMS - Password Manager"
         ]);

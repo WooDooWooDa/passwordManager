@@ -59,7 +59,7 @@ class LoginController extends SecurityController
 
     public function debug()
     {
-        $key = sess('envKey');
+        $key = getenv('TWILIO_ACCOUNT_SID');
         var_dump($key);
     }
 }

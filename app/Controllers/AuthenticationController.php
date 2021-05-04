@@ -19,7 +19,6 @@ class AuthenticationController extends SecurityController
             $_SESSION["smsAuth"] = $smsAuth->createSms($_SESSION["phone"]);
             Flash::info("Code envoyer au ". $_SESSION["phone"]);
         }
-        //var_dump($_SESSION["smsAuth"]);
         return $this->render('smsAuth', [
             'title' => "Comfirmation par SMS - Password Manager"
         ]);
@@ -30,7 +29,7 @@ class AuthenticationController extends SecurityController
         $form = $this->buildForm()->buildObject();
         if ($form->code == $_SESSION["smsAuth"]) {
             //return to login with
-            return true;
+            echo "bon code !";
         } else {
             Flash::error("Code de comfirmation invalide");
             unset($_SESSION["phone"]);

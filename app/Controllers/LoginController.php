@@ -49,18 +49,17 @@ class LoginController extends SecurityController
         }
         $broker = new ServiceBroker();
         $services = $broker->getAllService();
-        echo $_SESSION["qrUrl"];
         return $this->render('homepage', [
             'title' => "Accueil - Password Manager",
-            'services' => $services,
-            'qrImg' => $_SESSION["qrUrl"]
+            'services' => $services
         ]);
     }
 
     public function debug()
     {
-        $key = getenv('TWILIO_AUTH_TOKEN');
-        var_dump($_ENV);
-        var_dump($key);
+        $authType = 4;
+        $auth = 2;
+        $result = ($authType & $auth) == $auth;
+        var_dump($result);
     }
 }

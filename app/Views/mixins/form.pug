@@ -8,3 +8,9 @@ mixin accountProperty(property, value, name)
       h3=property
     .col-7.align-self-center
       input.form-control(value=value name=name)
+
+mixin checkbox(name, label, icon)
+  .form-check
+    input.check.form-check-input(type='checkbox' id=name name=name)
+    label.form-check-label(for=name)=label + " "
+      i(class=icon)

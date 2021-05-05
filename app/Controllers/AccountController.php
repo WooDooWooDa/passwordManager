@@ -1,6 +1,6 @@
 <?php namespace Controllers;
 
-use Models\Authentification2fa;
+use Models\Authentication2fa;
 use Models\Brokers\AccountBroker;
 use Models\Brokers\ServiceBroker;
 use Models\Brokers\TokenBroker;
@@ -37,7 +37,6 @@ class AccountController extends SecurityController
         if ($gravatar->isAvailable()) {
             $imageUrl = $gravatar->getUrl();
         }
-
         $tokenBroker = new TokenBroker();
         $tokenList = $tokenBroker->getAllTokenByUserId(sess('user_id'));
 
@@ -60,15 +59,13 @@ class AccountController extends SecurityController
 
     public function logout()
     {
-        $broker = new AccountBroker();
-        $broker->unremember($_COOKIE[REMEMBERME]);                            //move this fn to TokenBroker
-
+        $broker = new TokenBroker();
+        $broker->unremembered($_COOKIE[REMEMBERME]);
         unset($_COOKIE[REMEMBERME]);
         unset($_COOKIE[KEY]);
         setcookie(REMEMBERME, null, -1, '/');
         setcookie(KEY, null, -1, '/');
-        unset($_SESSION["is_logged"]);
-        unset($_SESSION["user_id"]);
+        session_unset();
         session_destroy();
         return $this->redirect("/login");
     }
@@ -92,24 +89,20 @@ class AccountController extends SecurityController
         $form = $this->buildForm()->buildObject();
         $user = $broker->findByUsername($form->username);
 
-        //2fa AUTH
-        $_SESSION["phone"] = $user->phone;
-        return $this->redirect("/authentication/smsAuth");
-        //2fa AUTH
-
         if (is_null($user)) {
             sleep(2);
             Flash::error("Information de connexion invalide");
             return $this->redirect("/login");
         }
         $hashPassword = $user->password;
-        if (!password_verify($form->password . PASSWORD_PEPPER, $hashPassword)) {
+        if (!password_verify($form->password . getenv('PASSWORD_PEPPER'), $hashPassword)) {
             sleep(2);
             Flash::error("Information de connexion invalide");
             return $this->redirect("/login");
         }
-        if ($form->rememberMe == 'on') {
-            $cookie = $broker->remember($user->user_id);
+        if (isset($form->rememberMe) && $form->rememberMe == 'on') {
+            $tokenBroker = new TokenBroker();
+            $cookie = $tokenBroker->remember($user->user_id);
             $cookie = new Cookie(REMEMBERME, $cookie);
             $cookie->setLifetime(Cookie::DURATION_MONTH);
             $cookie->send();
@@ -119,8 +112,10 @@ class AccountController extends SecurityController
         }
         $_SESSION["is_logged"] = true;
         $_SESSION["user_id"] = $user->user_id;
+        $_SESSION["authType"] = $user->authtype;
+        $_SESSION["phone"] = $user->phone;
         $_SESSION["envKey"] = $broker->getKey($form->password, $user->user_id);
-        return $this->redirect("/home");
+        return $this->redirect("/authentication");
     }
 
     public function updateAccount()

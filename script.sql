@@ -1,9 +1,6 @@
 set search_path = "passwordmanagerdb";
 
-drop schema passwordmanagerdb;
-create schema passwordmanagerdb;
-
-drop table authentication;
+drop table if exists authentication;
 create table if not exists authentication
 (
     user_id serial not null,
@@ -20,7 +17,7 @@ create table if not exists authentication
 
 alter table authentication owner to etudiant;
 
-drop table person;
+drop table if exists person;
 create table if not exists person
 (
     id serial not null,
@@ -47,8 +44,8 @@ create table if not exists token
 alter table token
     owner to etudiant;
 
-drop table service_information;
-drop table service;
+drop table if exists service_information;
+drop table if exists service;
 create table if not exists service
 (
     id serial not null,
@@ -74,7 +71,7 @@ create table if not exists service_information
             primary key
 );
 
-drop table salt;
+drop table if exists salt;
 create table if not exists salt
 (
     user_id integer not null
@@ -87,12 +84,12 @@ alter table salt owner to etudiant;
 
 alter table passwordmanagerdb.service_information owner to etudiant;
 
-INSERT INTO authentication (user_id, username, password, firstname, lastname, email) VALUES (1, 'admin', '$2y$10$pkb2ag75IRayNlgvJQkoeuGeYuc9sSgOnASjbGuxFEtUr/MFLiFlG', 'admin', 'system', 'admin-system@hotmail.com');
-INSERT INTO authentication (user_id, username, password, firstname, lastname, email) VALUES (2, 'bob', '$2y$10$A9fbOu7JoDUgHACVocChROnjHACP7nAi5BKESNsLn1LpsOrQ/wiTa', 'Jé', 'Bouy', 'jé-ou@gmail.com');
-INSERT INTO authentication (user_id, username, password, firstname, lastname, email) VALUES (3, 'jé', '$2y$10$f4xxk/pK7FZMk2XmV6zOLe/lqfECqb8qJ.ejv/XDI.TbgQnkOxYze', 'Jérémie', 'Bou', 'jeremie-bouchard@hotmail.fr');
-INSERT INTO authentication (user_id, username, password, firstname, lastname, email, phone, authType) VALUES (4, 'bri', '$2y$10$ErSWZfxsJct2damPB/d.y./01wZwD/JoYSqBD6mMByAe01lEYWxSa', 'Brigitte', 'Berger', 'bri@hotmail.com', '4508801456', 1);
+INSERT INTO authentication (user_id, username, password, firstname, lastname, email) VALUES (default, 'admin', '$2y$10$pkb2ag75IRayNlgvJQkoeuGeYuc9sSgOnASjbGuxFEtUr/MFLiFlG', 'admin', 'system', 'admin-system@hotmail.com');
+INSERT INTO authentication (user_id, username, password, firstname, lastname, email) VALUES (default, 'bob', '$2y$10$A9fbOu7JoDUgHACVocChROnjHACP7nAi5BKESNsLn1LpsOrQ/wiTa', 'Jé', 'Bouy', 'jé-ou@gmail.com');
+INSERT INTO authentication (user_id, username, password, firstname, lastname, email, phone, authType) VALUES (default, 'jé', '$2y$10$f4xxk/pK7FZMk2XmV6zOLe/lqfECqb8qJ.ejv/XDI.TbgQnkOxYze', 'Jérémie', 'Bou', 'jeremie-bouchard@hotmail.fr', '4508801456', 1);
+INSERT INTO authentication (user_id, username, password, firstname, lastname, email, phone, authType) VALUES (default, 'bri', '$2y$10$ErSWZfxsJct2damPB/d.y./01wZwD/JoYSqBD6mMByAe01lEYWxSa', 'Brigitte', 'Berger', 'bri@hotmail.com', '4508801456', 1);
 
-INSERT INTO service (id, name, img, url) VALUES (3, 'Instagram', '/assets/images/instagram_logo.png', 'https://www.instagram.com/');
-INSERT INTO service (id, name, img, url) VALUES (1, 'Facebook', '/assets/images/facebook_logo.png', 'https://www.facebook.com/');
-INSERT INTO service (id, name, img, url) VALUES (4, 'Omnivox', '/assets/images/omnivox_logo.png', 'https://cegepst.omnivox.ca/Login');
-INSERT INTO service (id, name, img, url) VALUES (2, 'Netflix', '/assets/images/netflix_logo.png', 'https://www.netflix.com/');
+INSERT INTO service (id, name, img, url) VALUES (default, 'Instagram', '/assets/images/instagram_logo.png', 'https://www.instagram.com/');
+INSERT INTO service (id, name, img, url) VALUES (default, 'Facebook', '/assets/images/facebook_logo.png', 'https://www.facebook.com/');
+INSERT INTO service (id, name, img, url) VALUES (default, 'Omnivox', '/assets/images/omnivox_logo.png', 'https://cegepst.omnivox.ca/Login');
+INSERT INTO service (id, name, img, url) VALUES (default, 'Netflix', '/assets/images/netflix_logo.png', 'https://www.netflix.com/');

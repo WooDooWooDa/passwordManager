@@ -2,6 +2,7 @@
 
 use Models\Brokers\AccountBroker;
 use Models\SmsAuthentication;
+use PHPGangsta_GoogleAuthenticator;
 use Zephyrus\Application\Flash;
 
 class AuthenticationController extends SecurityController
@@ -9,14 +10,18 @@ class AuthenticationController extends SecurityController
     public function initializeRoutes()
     {
         $this->get("/authentication", "authentication");
-        $this->get("/googleAuth", "googleAuth");
+        $this->get("/authentication/googleAuth", "googleAuth");
         $this->get("/authentication/smsAuth", "smsAuth");
         $this->post("/authentication/smsAuth/confirm", "smsConfirm");
+        $this->post("/authentication/googleAuth/confirm", "googleConfirm");
         $this->put("/authentication/update", "update");
     }
 
     public function authentication()
     {
+        if (isset($_SESSION["is_logged"])) {
+            return $this->redirect("/home");
+        }
         $authType = $_SESSION["authType"];
         if (!$authType == 0) {
             if (($authType & 1) == 1 && !isset($_SESSION["sms"])) {
@@ -26,7 +31,7 @@ class AuthenticationController extends SecurityController
                 //email auth
             }
             if (($authType & 4) == 4 && !isset($_SESSION["google"])) {
-                //google auth
+                return $this->redirect("/authentication/googleAuth");
             }
         }
         return $this->redirect("/home");
@@ -34,6 +39,7 @@ class AuthenticationController extends SecurityController
 
     public function smsAuth()
     {
+        //get le phone avec broker et non session
         if (!isset($_SESSION["smsAuth"])) {
             $smsAuth = new SmsAuthentication();
             $_SESSION["smsAuth"] = $smsAuth->createSms($_SESSION["phone"]);
@@ -52,18 +58,39 @@ class AuthenticationController extends SecurityController
             return $this->redirect("/authentication");
         } else {
             Flash::error("Code de comfirmation invalide");
-            unset($_SESSION["phone"]);
-            unset($_SESSION["smsAuth"]);
-            return $this->redirect("/login");
+            return $this->redirect("/authentication/smsAuth");
         }
     }
 
     public function googleAuth()
     {
+        $website = 'https://password.local';
+        $title= 'Password Manager';
+
+        $authenticator = new PHPGangsta_GoogleAuthenticator();
+        $secret = $authenticator->createSecret();
+        $_SESSION["googleSecret"] = $secret;
+        $qrCodeUrl = $authenticator->getQRCodeGoogleUrl($title, $secret, $website);
         return $this->render('googleAuthentication', [
-            'qrUrl' => $_SESSION["qrUrl"],
-            'title' => "Comfirmation par SMS - Password Manager"
+            'qrUrl' => $qrCodeUrl,
+            'title' => "Comfirmation par Google Authenticator - Password Manager"
         ]);
+    }
+
+    public function googleConfirm()
+    {
+        $authenticator = new PHPGangsta_GoogleAuthenticator();
+
+        $secret = $_SESSION["googleSecret"];
+        $otp = $this->buildForm()->buildObject()->otp;
+        $tolerance = 1;
+        if ($authenticator->verifyCode($secret, $otp, $tolerance)) {
+            $_SESSION["google"] = true;
+            return $this->redirect("/authentication");
+        } else {
+            Flash::error("Code de comfirmation invalide");
+            return $this->redirect("/authentication/googleAuth");
+        }
     }
 
     public function update()

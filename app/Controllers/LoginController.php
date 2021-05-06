@@ -1,6 +1,7 @@
 <?php namespace Controllers;
 
 use Models\Brokers\ServiceBroker;
+use PHPGangsta_GoogleAuthenticator;
 use Sonata\GoogleAuthenticator\GoogleAuthenticator;
 
 class LoginController extends SecurityController
@@ -58,10 +59,12 @@ class LoginController extends SecurityController
 
     public function debug()
     {
-        $username = "jé";
-        $g = new GoogleAuthenticator();
-        $salt = '7WAO342QFANY6IKBF7L7SWEUU79WL3VMT920VB5NQMW';
-        $secret = $username . $salt;
-        echo '<img src="'.$g->getURL($username, 'example.com', $secret).'" />';
+        $authenticator = new PHPGangsta_GoogleAuthenticator();
+        $secret = $authenticator->createSecret(); //save secret
+
+        $website = 'https://password.local'; //Your Website
+        $title= 'Password Manager';
+        $qrCodeUrl = $authenticator->getQRCodeGoogleUrl($title, $secret,$website);
+        echo '<img src="'.$qrCodeUrl.'" />';
     }
 }

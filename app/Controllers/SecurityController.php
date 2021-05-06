@@ -161,7 +161,7 @@ abstract class SecurityController extends ZephyrusBaseController
         $csp->setScriptSources(["'self'", 'https://ajax.googleapis.com', 'https://maps.googleapis.com',
             'https://www.google-analytics.com', 'http://connect.facebook.net']);
         $csp->setChildSources(["'self'", 'http://staticxx.facebook.com']);
-        $csp->setImageSources(["'self'", 'data:', 'https://www.gravatar.com/']);
+        $csp->setImageSources(["'self'", 'data:', 'https://www.gravatar.com/', 'https://api.qrserver.com/']);
         $csp->setBaseUri([$this->request->getBaseUrl()]);
 
         /**

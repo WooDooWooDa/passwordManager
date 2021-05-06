@@ -1,6 +1,7 @@
 <?php namespace Controllers;
 
 use Models\Brokers\ServiceBroker;
+use Sonata\GoogleAuthenticator\GoogleAuthenticator;
 
 class LoginController extends SecurityController
 {
@@ -57,9 +58,10 @@ class LoginController extends SecurityController
 
     public function debug()
     {
-        $authType = 4;
-        $auth = 2;
-        $result = ($authType & $auth) == $auth;
-        var_dump($result);
+        $username = "jé";
+        $g = new GoogleAuthenticator();
+        $salt = '7WAO342QFANY6IKBF7L7SWEUU79WL3VMT920VB5NQMW';
+        $secret = $username . $salt;
+        echo '<img src="'.$g->getURL($username, 'example.com', $secret).'" />';
     }
 }

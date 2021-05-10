@@ -1,5 +1,6 @@
 <?php namespace Models\Brokers;
 
+use PHPGangsta_GoogleAuthenticator;
 use stdClass;
 use Zephyrus\Security\Cryptography;
 
@@ -58,4 +59,19 @@ class AccountBroker extends Broker
         $sql = "UPDATE passwordmanagerdb.authentication set authType = ? WHERE user_id = ?";
         $this->query($sql, [$authType, $id]);
     }
+
+    public function getSecret($userId): string
+    {
+        $sql = "SELECT secret FROM passwordmanagerdb.google_auth_secret WHERE user_id = ?";
+        $result = $this->selectSingle($sql, [$userId]);
+        if ($result == null) {
+            $authenticator = new PHPGangsta_GoogleAuthenticator();
+            $sql = "INSERT INTO passwordmanagerdb.google_auth_secret(user_id, secret) VALUES (?, ?)";
+            $secret = $authenticator->createSecret();
+            $this->query($sql, [$userId, $secret]);
+            return $secret;
+        }
+        return $result->secret;
+    }
+
 }

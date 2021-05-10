@@ -7,6 +7,9 @@ use Zephyrus\Application\Flash;
 
 class AuthenticationController extends SecurityController
 {
+    const WEBSITE = "password.local - Password Manager";
+    const TITLE = "Password Manager";
+
     public function initializeRoutes()
     {
         $this->get("/authentication", "authentication");
@@ -21,9 +24,9 @@ class AuthenticationController extends SecurityController
 
     public function authentication()
     {
-        //if (isset($_SESSION["is_logged"])) {
-        //    return $this->redirect("/home");
-        //}
+        if (isset($_SESSION["is_logged"])) {
+           return $this->redirect("/home");
+        }
         $authType = $_SESSION["authType"];
         if (!$authType == 0) {
             if (($authType & 1) == 1 && !isset($_SESSION["sms"])) {
@@ -37,6 +40,7 @@ class AuthenticationController extends SecurityController
             }
         }
         $_SESSION["is_logged"] = true;
+        Flash::success("Authentification à deux facteurs complétée!");
         return $this->redirect("/home");
     }
 
@@ -94,13 +98,10 @@ class AuthenticationController extends SecurityController
 
     public function googleAuth()
     {
-        $website = 'https://password.local';
-        $title= 'Password Manager';
-
         $authenticator = new PHPGangsta_GoogleAuthenticator();
-        $secret = $authenticator->createSecret();
-        $_SESSION["googleSecret"] = $secret;
-        $qrCodeUrl = $authenticator->getQRCodeGoogleUrl($title, $secret, $website);
+        $broker = new AccountBroker();
+        $secret = $broker->getSecret($_SESSION["user_id"]);
+        $qrCodeUrl = $authenticator->getQRCodeGoogleUrl(self::TITLE, $secret, self::WEBSITE);
         return $this->render('googleAuthentication', [
             'qrUrl' => $qrCodeUrl,
             'title' => "Comfirmation par Google Authenticator - Password Manager"
@@ -111,7 +112,8 @@ class AuthenticationController extends SecurityController
     {
         $authenticator = new PHPGangsta_GoogleAuthenticator();
 
-        $secret = $_SESSION["googleSecret"];
+        $broker = new AccountBroker();
+        $secret = $broker->getSecret($_SESSION["user_id"]);
         $otp = $this->buildForm()->buildObject()->otp;
         $tolerance = 1;
         if ($authenticator->verifyCode($secret, $otp, $tolerance)) {

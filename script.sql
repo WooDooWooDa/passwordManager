@@ -62,7 +62,7 @@ create table if not exists service_information
 (
     id_service             integer not null
         constraint service_information_service_id_fk
-            references passwordmanagerdb.service,
+            references service,
     username               varchar(255),
     password               text,
     user_id                integer,
@@ -82,11 +82,21 @@ create table if not exists salt
 
 alter table salt owner to etudiant;
 
-alter table passwordmanagerdb.service_information owner to etudiant;
+alter table service_information owner to etudiant;
+
+create table if not exists google_auth_secret
+(
+    user_id integer,
+    secret varchar(50) not null,
+    constraint google_auth_secret_pk
+        primary key (secret)
+);
+
+alter table google_auth_secret owner to etudiant;
 
 INSERT INTO authentication (user_id, username, password, firstname, lastname, email) VALUES (default, 'admin', '$2y$10$pkb2ag75IRayNlgvJQkoeuGeYuc9sSgOnASjbGuxFEtUr/MFLiFlG', 'admin', 'system', 'admin-system@hotmail.com');
 INSERT INTO authentication (user_id, username, password, firstname, lastname, email) VALUES (default, 'bob', '$2y$10$A9fbOu7JoDUgHACVocChROnjHACP7nAi5BKESNsLn1LpsOrQ/wiTa', 'Jé', 'Bouy', 'jé-ou@gmail.com');
-INSERT INTO authentication (user_id, username, password, firstname, lastname, email, phone, authType) VALUES (default, 'jé', '$2y$10$f4xxk/pK7FZMk2XmV6zOLe/lqfECqb8qJ.ejv/XDI.TbgQnkOxYze', 'Jérémie', 'Bou', 'jeremie-bouchard@hotmail.fr', '4508801456', 1);
+INSERT INTO authentication (user_id, username, password, firstname, lastname, email, phone, authType) VALUES (default, 'jé', '$2y$10$f4xxk/pK7FZMk2XmV6zOLe/lqfECqb8qJ.ejv/XDI.TbgQnkOxYze', 'Jérémie', 'Bou', 'woodoowooda@gmail.com', '4508801456', 1);
 INSERT INTO authentication (user_id, username, password, firstname, lastname, email, phone, authType) VALUES (default, 'bri', '$2y$10$ErSWZfxsJct2damPB/d.y./01wZwD/JoYSqBD6mMByAe01lEYWxSa', 'Brigitte', 'Berger', 'bri@hotmail.com', '4508801456', 1);
 
 INSERT INTO salt(user_id, salt) VALUES (3, 'sanvuifbsvksowufb3rbfb3976fbbi23');

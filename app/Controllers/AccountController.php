@@ -1,10 +1,8 @@
 <?php namespace Controllers;
 
-use Models\Authentication2fa;
 use Models\Brokers\AccountBroker;
 use Models\Brokers\ServiceBroker;
 use Models\Brokers\TokenBroker;
-use Models\SmsAuthentication;
 use Models\Validator;
 use Zephyrus\Application\Flash;
 use Zephyrus\Network\Cookie;
@@ -110,10 +108,8 @@ class AccountController extends SecurityController
             $keyCookie->setLifetime(Cookie::DURATION_MONTH);
             $keyCookie->send();
         }
-        $_SESSION["is_logged"] = true;
         $_SESSION["user_id"] = $user->user_id;
         $_SESSION["authType"] = $user->authtype;
-        $_SESSION["phone"] = $user->phone;
         $_SESSION["envKey"] = $broker->getKey($form->password, $user->user_id);
         return $this->redirect("/authentication");
     }

@@ -89,6 +89,8 @@ INSERT INTO authentication (user_id, username, password, firstname, lastname, em
 INSERT INTO authentication (user_id, username, password, firstname, lastname, email, phone, authType) VALUES (default, 'jé', '$2y$10$f4xxk/pK7FZMk2XmV6zOLe/lqfECqb8qJ.ejv/XDI.TbgQnkOxYze', 'Jérémie', 'Bou', 'jeremie-bouchard@hotmail.fr', '4508801456', 1);
 INSERT INTO authentication (user_id, username, password, firstname, lastname, email, phone, authType) VALUES (default, 'bri', '$2y$10$ErSWZfxsJct2damPB/d.y./01wZwD/JoYSqBD6mMByAe01lEYWxSa', 'Brigitte', 'Berger', 'bri@hotmail.com', '4508801456', 1);
 
+INSERT INTO salt(user_id, salt) VALUES (3, 'sanvuifbsvksowufb3rbfb3976fbbi23');
+
 INSERT INTO service (id, name, img, url) VALUES (default, 'Instagram', '/assets/images/instagram_logo.png', 'https://www.instagram.com/');
 INSERT INTO service (id, name, img, url) VALUES (default, 'Facebook', '/assets/images/facebook_logo.png', 'https://www.facebook.com/');
 INSERT INTO service (id, name, img, url) VALUES (default, 'Omnivox', '/assets/images/omnivox_logo.png', 'https://cegepst.omnivox.ca/Login');

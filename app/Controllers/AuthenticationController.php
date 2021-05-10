@@ -1,7 +1,7 @@
 <?php namespace Controllers;
 
 use Models\Brokers\AccountBroker;
-use Models\SmsAuthentication;
+use Models\Authentication2Fa;
 use PHPGangsta_GoogleAuthenticator;
 use Zephyrus\Application\Flash;
 
@@ -12,38 +12,42 @@ class AuthenticationController extends SecurityController
         $this->get("/authentication", "authentication");
         $this->get("/authentication/googleAuth", "googleAuth");
         $this->get("/authentication/smsAuth", "smsAuth");
+        $this->get("/authentication/emailAuth", "emailAuth");
         $this->post("/authentication/smsAuth/confirm", "smsConfirm");
         $this->post("/authentication/googleAuth/confirm", "googleConfirm");
+        $this->post("/authentication/emailAuth/confirm", "emailConfirm");
         $this->put("/authentication/update", "update");
     }
 
     public function authentication()
     {
-        if (isset($_SESSION["is_logged"])) {
-            return $this->redirect("/home");
-        }
+        //if (isset($_SESSION["is_logged"])) {
+        //    return $this->redirect("/home");
+        //}
         $authType = $_SESSION["authType"];
         if (!$authType == 0) {
             if (($authType & 1) == 1 && !isset($_SESSION["sms"])) {
                 return $this->redirect("/authentication/smsAuth");
             }
             if (($authType & 2) == 2 && !isset($_SESSION["email"])) {
-                //email auth
+                return $this->redirect("/authentication/emailAuth");
             }
             if (($authType & 4) == 4 && !isset($_SESSION["google"])) {
                 return $this->redirect("/authentication/googleAuth");
             }
         }
+        $_SESSION["is_logged"] = true;
         return $this->redirect("/home");
     }
 
     public function smsAuth()
     {
-        //get le phone avec broker et non session
         if (!isset($_SESSION["smsAuth"])) {
-            $smsAuth = new SmsAuthentication();
-            $_SESSION["smsAuth"] = $smsAuth->createSms($_SESSION["phone"]);
-            Flash::info("Code envoyer au ". $_SESSION["phone"]);
+            $smsAuth = new Authentication2Fa();
+            $broker = new AccountBroker();
+            $user = $broker->findById($_SESSION["user_id"]);
+            $_SESSION["smsAuth"] = $smsAuth->createSms($user->phone);
+            Flash::info("Code envoyer au ". $user->phone);
         }
         return $this->render('smsAuth', [
             'title' => "Comfirmation par SMS - Password Manager"
@@ -55,6 +59,32 @@ class AuthenticationController extends SecurityController
         $form = $this->buildForm()->buildObject();
         if ($form->code == $_SESSION["smsAuth"]) {
             $_SESSION["sms"] = true;
+            return $this->redirect("/authentication");
+        } else {
+            Flash::error("Code de comfirmation invalide");
+            return $this->redirect("/authentication/smsAuth");
+        }
+    }
+
+    public function emailAuth()
+    {
+        if (!isset($_SESSION["emailAuth"])) {
+            $auth = new Authentication2Fa();
+            $broker = new AccountBroker();
+            $user = $broker->findById($_SESSION["user_id"]);
+            $_SESSION["emailAuth"] = $auth->createEmail($user->email);
+            Flash::info("Code envoyer à " . $user->email);
+        }
+        return $this->render('emailAuth', [
+            'title' => "Comfirmation par Email - Password Manager"
+        ]);
+    }
+
+    public function emailConfirm()
+    {
+        $form = $this->buildForm()->buildObject();
+        if ($form->code == $_SESSION["emailAuth"]) {
+            $_SESSION["email"] = true;
             return $this->redirect("/authentication");
         } else {
             Flash::error("Code de comfirmation invalide");

@@ -4,6 +4,7 @@ $('input').keydown(function (e) {
 
 function validateNumberOnly(e) {
     let key
+    console.log(e.type)
     if (e.type === 'paste') {
         key = event.clipboardData.getData('text/plain');
     } else {

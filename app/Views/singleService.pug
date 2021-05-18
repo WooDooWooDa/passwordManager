@@ -7,7 +7,7 @@ block content
       i.fas.fa-chevron-left
       | &nbsp;Retour
   h1=service.name
-  h5 Gérer vos informations de votre pour ce service
+  h5 Gérer les informations pour ce service
   .w-50.mx-auto.text-left
     +form("put", "/service/update/" + service.id)
       +accountProperty("Nom d'utilisateur :", serviceInfo.username, "username")

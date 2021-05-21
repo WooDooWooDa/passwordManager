@@ -20,12 +20,18 @@ class ServiceController extends SecurityController
         if (!isset($_SESSION["is_logged"])) {
             return $this->redirect("/login");
         }
-        if (!isset($_SESSION['showMdp'])) {
-            $_SESSION['showMdp'] = [false, false, false, false];
-        }
         $broker = new ServiceBroker();
         $services = $broker->getAllServiceWithInfo(sess('user_id'));
-        $array = $_SESSION['showMdp'];
+
+        if (!isset($_SESSION['showMdp'])) {
+            $array = [];
+            foreach ($services as $index=>$service) {
+                $array[$index] = false;
+            }
+            $_SESSION['showMdp'] = $array;
+        } else {
+            $array = $_SESSION['showMdp'];
+        }
         foreach ($services as $index=>$service) {
             if ($array[$index]) {
                 $password = $broker->getPasswordDecrypted($service);
@@ -74,7 +80,7 @@ class ServiceController extends SecurityController
         }
         $broker = new ServiceBroker();
         if (!is_null($broker->getServiceByIdAndUser($id, sess('user_id')))) {
-            $broker->update(sess('user_id'), $id, $form->buildObject()); //update chie à qqpart!!!
+            $broker->update(sess('user_id'), $id, $form->buildObject());
         } else {
             $broker->insert($id, sess('user_id'), $form->buildObject());
         }

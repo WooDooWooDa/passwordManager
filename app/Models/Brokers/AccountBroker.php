@@ -32,6 +32,9 @@ class AccountBroker extends Broker
         } else {
             $userSql = "UPDATE passwordmanagerdb.authentication SET username = ?, password = ?, firstname = ?, lastname = ?, email = ? where user_id = '$userId'";
             $this->query($userSql ,[$user->username, $saltedPassword, $user->firstname, $user->lastname, $user->email]);
+            //update all mdp!
+            $serviceBroker = new ServiceBroker();
+            $serviceBroker->updateAllPassword($this->getKey($user->password, $userId), $userId);
         }
     }
 

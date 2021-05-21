@@ -15,7 +15,7 @@ class Authentication2Fa
         $client = new Client(getenv('TWILIO_ACCOUNT_SID'),getenv('TWILIO_AUTH_TOKEN'));
         $client->messages->create($phone, [
             'from' => self::TWILIO_NUMBER,
-            'body' => "Voici votre code : " . $code
+            'body' => "Voici votre code de vérification : " . $code
         ]);
         return $code;
     }

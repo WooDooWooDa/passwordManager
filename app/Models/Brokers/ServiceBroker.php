@@ -76,4 +76,16 @@ class ServiceBroker extends Broker
         $passwordDecryptedOnce = Cryptography::decrypt($service->password, SERVERKEY);
         return Cryptography::decrypt($passwordDecryptedOnce, $key);
     }
+
+    public function updateAllPassword($key, $userId)
+    {
+        $services = $this->getAllServiceWithInfo($userId);
+        foreach ($services as $service) {
+            $service->password = $this->getPasswordDecrypted($service);
+        }
+        $_SESSION["envKey"] = $key;
+        foreach ($services as $service) {
+            $this->update($userId, $service->id, $service);
+        }
+    }
 }

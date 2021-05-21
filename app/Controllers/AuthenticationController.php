@@ -40,7 +40,7 @@ class AuthenticationController extends SecurityController
             }
         }
         $_SESSION["is_logged"] = true;
-        Flash::success("Authentification à deux facteurs complétée!");
+        Flash::success("Authentification complétée, bienvenue!");
         return $this->redirect("/home");
     }
 
